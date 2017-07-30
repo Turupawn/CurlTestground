@@ -15,7 +15,7 @@
 using namespace std;
 
 int BYTES_DOWNLOADED = 0;
-int TOTAL_BYTES_DOWNLOAD = 14679474;
+int TOTAL_BYTES_DOWNLOAD = 14657001;
 
 struct data
 {
@@ -63,6 +63,13 @@ void curlDownloadFile(string url, string download_path)
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
     res = curl_easy_perform(curl);
+
+    double cl;
+    res = curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &cl);
+    if(!res) {
+      printf("Size: %.0f\n", cl);
+    }
+
     /* always cleanup */
     curl_easy_cleanup(curl);
     fclose(file);
@@ -77,7 +84,7 @@ void downloadFile(string url, string download_path)
 
 int main(void)
 {
-  downloadFile("https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg", "test.jpg");
+  downloadFile("http://rosalilastudio.com:1337/ftp/file.zip", "file.zip");
 
   while(BYTES_DOWNLOADED < TOTAL_BYTES_DOWNLOAD)
   {
