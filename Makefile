@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -std=c++11
-LDFLAGS=-lcurl -pthread
-SOURCES=main.cpp CurlWrapper/CurlWrapper.cpp
+LDFLAGS=-lcurl -pthread -lz
+SOURCES=main.cpp CurlWrapper/CurlWrapper.cpp ZlibWrapper/ZlibWrapper.cpp ZlibWrapper/junzip/junzip.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=CurlTest
 

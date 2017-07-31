@@ -6,6 +6,11 @@
 
 using namespace std;
 
-int getBytesDownloaded();
-int getFileSize();
+//Reference
+//https://curl.haxx.se/libcurl/c/url2file.html
+//http://curl.askapache.com/c/debug.html
+
+double getBytesDownloaded();
+double getFileSize();
 void downloadFile(string url, string download_path);
+double getDownloadPercentage();

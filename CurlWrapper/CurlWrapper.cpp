@@ -1,7 +1,7 @@
 #include "CurlWrapper.h"
 
-int BYTES_DOWNLOADED = 0;
-int FILE_SIZE = 99999999;
+double BYTES_DOWNLOADED = 0;
+double FILE_SIZE = std::numeric_limits<unsigned long long>::max();
 
 struct data
 {
@@ -27,7 +27,7 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
   return written;
 }
 
-void curlGetFileSize(string url)
+double curlGetFileSize(string url)
 {
   CURL *curl;
   curl = curl_easy_init();
@@ -39,8 +39,9 @@ void curlGetFileSize(string url)
 
   double result;
   curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &result);
-  FILE_SIZE = result;
   curl_easy_cleanup(curl);
+
+  return result;
 }
 
 void curlDownloadFile(string url, string download_path)
@@ -51,7 +52,7 @@ void curlDownloadFile(string url, string download_path)
   struct data config;
 
   config.trace_ascii = 1; /* enable ascii tracing */
-  curlGetFileSize(url);
+  FILE_SIZE = curlGetFileSize(url);
   curl = curl_easy_init();
   if(curl)
   {
@@ -66,18 +67,17 @@ void curlDownloadFile(string url, string download_path)
 
     curl_easy_perform(curl);
 
-    /* always cleanup */
     curl_easy_cleanup(curl);
     fclose(file);
   }
 }
 
-int getBytesDownloaded()
+double getBytesDownloaded()
 {
   return BYTES_DOWNLOADED;
 }
 
-int getFileSize()
+double getFileSize()
 {
   return FILE_SIZE;
 }
@@ -86,4 +86,13 @@ void downloadFile(string url, string download_path)
 {
   std::thread t(curlDownloadFile, url, download_path);
   t.detach();
+}
+
+double getDownloadPercentage()
+{
+  if(getFileSize()<0)
+    return -1;
+  if(getFileSize()==0)
+    return 0;
+  return getBytesDownloaded()*100/getFileSize();
 }

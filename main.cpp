@@ -1,20 +1,18 @@
 #include "CurlWrapper/CurlWrapper.h"
-
-//Reference
-//https://curl.haxx.se/libcurl/c/url2file.html
-//http://curl.askapache.com/c/debug.html
+#include "ZlibWrapper/ZlibWrapper.h"
 
 using namespace std;
 
 int main(void)
 {
   downloadFile("http://rosalilastudio.com:1337/ftp/file.zip", "file.zip");
-
-  while(getBytesDownloaded() < getFileSize())
+  while(getDownloadPercentage()!=100.00)
   {
-    int percentage_downloaded = getBytesDownloaded()*100/getFileSize();
-    cout<<percentage_downloaded<<"% downloaded"<<endl;
+    cout<<getDownloadPercentage()<<"% downloaded"<<endl;
   }
   cout<<"Download complete"<<endl;
+
+  unzip("file.zip");
+
   return 0;
 }
